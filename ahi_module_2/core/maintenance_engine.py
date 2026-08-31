@@ -24,9 +24,6 @@ class MaintenanceEngine:
         return False
 
     @staticmethod
-    def perform_major_maintenance_reset(
-        current_age: float,
-        reset_age: float = 0.0,
-    ) -> float:
+    def perform_major_maintenance_reset(reset_age: float = 0.0) -> float:
         """Return the effective age after major maintenance reset."""
         return max(0.0, reset_age)

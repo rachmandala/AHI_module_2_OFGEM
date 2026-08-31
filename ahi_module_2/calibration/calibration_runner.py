@@ -13,8 +13,6 @@ from ahi_module_2.config.simulation_config import SimulationConfig
 from ahi_module_2.data_models.asset_input import AssetInput
 from ahi_module_2.data_models.condition_inputs import ConditionInputs, ModifierInput
 from ahi_module_2.data_models.financial_inputs import FinancialInputs
-from ahi_module_2.data_models.maintenance_history import MaintenanceHistory
-from ahi_module_2.data_models.operating_history import OperatingHistory
 from ahi_module_2.simulation.maintenance_policy import AHIBasedPolicy
 from ahi_module_2.simulation.simulation_runner import SimulationRunner
 
@@ -42,8 +40,6 @@ class CalibrationRunner:
         condition_inputs: ConditionInputs,
         observed_opex: list[float],
         observed_capex: list[float],
-        operating_history: OperatingHistory | None = None,
-        maintenance_history: MaintenanceHistory | None = None,
         sim_config: SimulationConfig | None = None,
         health_config: HealthConfig | None = None,
         optimizer: Optimizer | None = None,

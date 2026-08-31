@@ -59,12 +59,14 @@ class SimulationRunner:
             self._condition_inputs.reliability_modifiers
         )
 
-        age = self._asset.current_age
         dt = self._sim_cfg.time_step
+        # age_offset tracks the simulation time at which the most recent maintenance reset occurred.
+        # Effective age at step i is: (i * dt) - age_offset + initial_age
+        age_offset = 0.0
 
         for step_idx in range(self._sim_cfg.horizon):
-            time = step_idx * dt
-            age_at_step = age + time
+            sim_time = step_idx * dt
+            age_at_step = self._asset.current_age + sim_time - age_offset
 
             hi = self._health_engine.calculate_base_health(age_at_step, beta)
             ahi = self._health_engine.calculate_ahi(hi, hm, rm)
@@ -72,7 +74,8 @@ class SimulationRunner:
 
             maintenance = self._policy.should_trigger(age_at_step, ahi)
             if maintenance:
-                age = -(time)  # reset effective age to 0 relative to simulation start
+                # Reset effective age to 0 by advancing the offset to current sim_time + initial_age
+                age_offset = sim_time + self._asset.current_age
                 age_at_step = 0.0
                 hi = self._health_engine.calculate_base_health(0.0, beta)
                 ahi = self._health_engine.calculate_ahi(hi, hm, rm)
@@ -92,7 +95,7 @@ class SimulationRunner:
 
             tracker.record(
                 SimulationStep(
-                    time=time,
+                    time=sim_time,
                     age=age_at_step,
                     hi=hi,
                     ahi=ahi,

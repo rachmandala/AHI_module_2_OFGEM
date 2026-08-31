@@ -102,4 +102,4 @@ class TestMaintenanceEngine:
         assert self.engine.determine_major_maintenance_trigger(10.0) is False
 
     def test_reset_returns_zero(self):
-        assert MaintenanceEngine.perform_major_maintenance_reset(15.0) == pytest.approx(0.0)
+        assert MaintenanceEngine.perform_major_maintenance_reset() == pytest.approx(0.0)

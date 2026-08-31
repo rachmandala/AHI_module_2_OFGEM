@@ -7,6 +7,9 @@ import math
 from ahi_module_2.config.health_config import HealthConfig
 from ahi_module_2.forecasting.aging_projection import calculate_corrected_aging_rate
 
+# Guard against overflow when projecting very high aging rates over long horizons
+_MAX_FHI_EXPONENT: float = 700.0
+
 
 class FutureHealthEngine:
     """Projects Future Health Index (FHI) forward in time.
@@ -30,8 +33,5 @@ class FutureHealthEngine:
     ) -> float:
         """Return FHI at *future_age* given the current state."""
         beta_c = self.calculate_corrected_aging_rate(current_ahi, current_age)
-        exponent = beta_c * future_age
-        # Guard against overflow for very high aging rates / long projections
-        MAX_EXPONENT = 700.0
-        exponent = min(exponent, MAX_EXPONENT)
+        exponent = min(beta_c * future_age, _MAX_FHI_EXPONENT)
         return self._cfg.hi_new * math.exp(exponent)
